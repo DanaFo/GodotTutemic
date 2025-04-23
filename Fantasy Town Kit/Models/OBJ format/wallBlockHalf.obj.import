@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dpslxyr67e5vd"
+path="res://.godot/imported/wallBlockHalf.obj-9f1a29725321e09b42bfbb914aaa6049.mesh"
+
+[deps]
+
+files=["res://.godot/imported/wallBlockHalf.obj-9f1a29725321e09b42bfbb914aaa6049.mesh"]
+
+source_file="res://Fantasy Town Kit/Models/OBJ format/wallBlockHalf.obj"
+dest_files=["res://.godot/imported/wallBlockHalf.obj-9f1a29725321e09b42bfbb914aaa6049.mesh", "res://.godot/imported/wallBlockHalf.obj-9f1a29725321e09b42bfbb914aaa6049.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cy3xu2grccnju"
+path="res://.godot/imported/roof.obj-9707bb4d19a00501b243d1c5699b203f.mesh"
+
+[deps]
+
+files=["res://.godot/imported/roof.obj-9707bb4d19a00501b243d1c5699b203f.mesh"]
+
+source_file="res://Fantasy Town Kit/Models/OBJ format/roof.obj"
+dest_files=["res://.godot/imported/roof.obj-9707bb4d19a00501b243d1c5699b203f.mesh", "res://.godot/imported/roof.obj-9707bb4d19a00501b243d1c5699b203f.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bod8pd8bwcm2h"
+path="res://.godot/imported/ice-cream-cne.obj-346e27abf53e7b2ba06d83fbef2008cf.mesh"
+
+[deps]
+
+files=["res://.godot/imported/ice-cream-cne.obj-346e27abf53e7b2ba06d83fbef2008cf.mesh"]
+
+source_file="res://Food Kit/Models/OBJ format/ice-cream-cne.obj"
+dest_files=["res://.godot/imported/ice-cream-cne.obj-346e27abf53e7b2ba06d83fbef2008cf.mesh", "res://.godot/imported/ice-cream-cne.obj-346e27abf53e7b2ba06d83fbef2008cf.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dw4d40uxxly8g"
+path="res://.godot/imported/fountainCenter.obj-1f6e4009072a1a7d0be0a4ee966d754e.mesh"
+
+[deps]
+
+files=["res://.godot/imported/fountainCenter.obj-1f6e4009072a1a7d0be0a4ee966d754e.mesh"]
+
+source_file="res://Fantasy Town Kit/Models/OBJ format/fountainCenter.obj"
+dest_files=["res://.godot/imported/fountainCenter.obj-1f6e4009072a1a7d0be0a4ee966d754e.mesh", "res://.godot/imported/fountainCenter.obj-1f6e4009072a1a7d0be0a4ee966d754e.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

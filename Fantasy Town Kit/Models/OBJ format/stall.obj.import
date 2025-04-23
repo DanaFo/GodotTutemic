@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://q211rqa6f57f"
+path="res://.godot/imported/stall.obj-ac18df895fb814d330d5919ad54b65ed.mesh"
+
+[deps]
+
+files=["res://.godot/imported/stall.obj-ac18df895fb814d330d5919ad54b65ed.mesh"]
+
+source_file="res://Fantasy Town Kit/Models/OBJ format/stall.obj"
+dest_files=["res://.godot/imported/stall.obj-ac18df895fb814d330d5919ad54b65ed.mesh", "res://.godot/imported/stall.obj-ac18df895fb814d330d5919ad54b65ed.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

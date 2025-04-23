@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dnryuenfaa5pk"
+path="res://.godot/imported/wallWoodWindowStone.obj-c3217d8914c3cbd8fd7349ca3df952d1.mesh"
+
+[deps]
+
+files=["res://.godot/imported/wallWoodWindowStone.obj-c3217d8914c3cbd8fd7349ca3df952d1.mesh"]
+
+source_file="res://Fantasy Town Kit/Models/OBJ format/wallWoodWindowStone.obj"
+dest_files=["res://.godot/imported/wallWoodWindowStone.obj-c3217d8914c3cbd8fd7349ca3df952d1.mesh", "res://.godot/imported/wallWoodWindowStone.obj-c3217d8914c3cbd8fd7349ca3df952d1.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

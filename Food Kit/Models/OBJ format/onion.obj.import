@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://c0tmr6t32kqty"
+path="res://.godot/imported/onion.obj-862c4b89f167313ef98e5c0a28e05670.mesh"
+
+[deps]
+
+files=["res://.godot/imported/onion.obj-862c4b89f167313ef98e5c0a28e05670.mesh"]
+
+source_file="res://Food Kit/Models/OBJ format/onion.obj"
+dest_files=["res://.godot/imported/onion.obj-862c4b89f167313ef98e5c0a28e05670.mesh", "res://.godot/imported/onion.obj-862c4b89f167313ef98e5c0a28e05670.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

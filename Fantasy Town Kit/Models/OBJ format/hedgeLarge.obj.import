@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dd2tawum4xe0b"
+path="res://.godot/imported/hedgeLarge.obj-49d514d687eb3a4364a2fa8aa5213fc3.mesh"
+
+[deps]
+
+files=["res://.godot/imported/hedgeLarge.obj-49d514d687eb3a4364a2fa8aa5213fc3.mesh"]
+
+source_file="res://Fantasy Town Kit/Models/OBJ format/hedgeLarge.obj"
+dest_files=["res://.godot/imported/hedgeLarge.obj-49d514d687eb3a4364a2fa8aa5213fc3.mesh", "res://.godot/imported/hedgeLarge.obj-49d514d687eb3a4364a2fa8aa5213fc3.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

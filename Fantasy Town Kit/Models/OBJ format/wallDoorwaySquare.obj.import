@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://b0tsxefqgfo6g"
+path="res://.godot/imported/wallDoorwaySquare.obj-83a7dec90a0e52283cb3dbc38f56e63e.mesh"
+
+[deps]
+
+files=["res://.godot/imported/wallDoorwaySquare.obj-83a7dec90a0e52283cb3dbc38f56e63e.mesh"]
+
+source_file="res://Fantasy Town Kit/Models/OBJ format/wallDoorwaySquare.obj"
+dest_files=["res://.godot/imported/wallDoorwaySquare.obj-83a7dec90a0e52283cb3dbc38f56e63e.mesh", "res://.godot/imported/wallDoorwaySquare.obj-83a7dec90a0e52283cb3dbc38f56e63e.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

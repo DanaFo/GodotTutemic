@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://088d3hw0pwnm"
+path="res://.godot/imported/plate-deep.obj-ad5ebad1d544023485e3acb43dbd864d.mesh"
+
+[deps]
+
+files=["res://.godot/imported/plate-deep.obj-ad5ebad1d544023485e3acb43dbd864d.mesh"]
+
+source_file="res://Food Kit/Models/OBJ format/plate-deep.obj"
+dest_files=["res://.godot/imported/plate-deep.obj-ad5ebad1d544023485e3acb43dbd864d.mesh", "res://.godot/imported/plate-deep.obj-ad5ebad1d544023485e3acb43dbd864d.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

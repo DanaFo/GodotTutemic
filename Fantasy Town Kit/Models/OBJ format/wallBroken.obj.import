@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://b13kty40tks1n"
+path="res://.godot/imported/wallBroken.obj-3f8aadf16e021d9dddad344d047bc118.mesh"
+
+[deps]
+
+files=["res://.godot/imported/wallBroken.obj-3f8aadf16e021d9dddad344d047bc118.mesh"]
+
+source_file="res://Fantasy Town Kit/Models/OBJ format/wallBroken.obj"
+dest_files=["res://.godot/imported/wallBroken.obj-3f8aadf16e021d9dddad344d047bc118.mesh", "res://.godot/imported/wallBroken.obj-3f8aadf16e021d9dddad344d047bc118.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false
