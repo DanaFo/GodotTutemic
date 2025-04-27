@@ -55,7 +55,9 @@ public partial class Player : CharacterBody3D
 
         _cameraRotationY = camera.Rotation.Y;
         _cameraRotationX = camera.Rotation.X;
-        _rotatedDirection = direction.X.Rotated(Vector3.Up, _cameraRotationY);
+        
+        //Rotated(Vector3.Up, _cameraRotationY);
+       // _rotatedDirection = direction.X.Rotated(Vector3.Up, _cameraRotationY);
         _targetVelocity.X = direction.X * _speed;
         _targetVelocity.Z = direction.Z * _speed;
 

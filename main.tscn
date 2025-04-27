@@ -33,5 +33,5 @@ shape = SubResource("CapsuleShape3D_7dm0k")
 mesh = SubResource("CapsuleMesh_7dm0k")
 
 [node name="Camera3D" type="Camera3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447513, 0)
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.447513, 0)
 current = true
