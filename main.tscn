@@ -35,3 +35,23 @@ mesh = SubResource("CapsuleMesh_7dm0k")
 [node name="Camera3D" type="Camera3D" parent="Player"]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.447513, 0)
 current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.652412, -0.242458, 0.718034, -0.129887, 0.897654, 0.421126, -0.746651, -0.368011, 0.554148, 0, 0, 0)
+shadow_enabled = true
+directional_shadow_mode = 1
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CrossHair" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = -3.0
+offset_right = 2.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2

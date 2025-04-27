@@ -6,7 +6,9 @@ public partial class Player : CharacterBody3D
     private Camera3D camera;
     
     [Export]
-    private float _mouseSensitivity = 1f;
+    private float _mouseSensitivityYaw = 0.6f;
+    [Export]
+    private float _mouseSensitivityPitch = 0.5f;
     [Export]
     private float _minPitch = -90f;
     [Export]
@@ -50,12 +52,14 @@ public partial class Player : CharacterBody3D
 
         if (direction != Vector3.Zero)
             direction = direction.Normalized();
-
+        
+        RotateCamera(_yaw, _pitch);
         // If you want movement relative to camera, rotate direction by camera's Y rotation here
 
         _cameraRotationY = camera.Rotation.Y;
         _cameraRotationX = camera.Rotation.X;
-        
+        direction = direction.Rotated(Vector3.Up, _cameraRotationY);
+        GD.Print(direction);
         //Rotated(Vector3.Up, _cameraRotationY);
        // _rotatedDirection = direction.X.Rotated(Vector3.Up, _cameraRotationY);
         _targetVelocity.X = direction.X * _speed;
@@ -78,12 +82,17 @@ public partial class Player : CharacterBody3D
        var mouseMotion = @event as InputEventMouseMotion;
         if (mouseMotion == null) return;
       
-        GD.Print(mouseMotion.Relative);
+       // GD.Print(mouseMotion.Relative);
             
-        _yaw -= mouseMotion.Relative.X * _mouseSensitivity;
-        _pitch -= mouseMotion.Relative.Y * _mouseSensitivity;
+        _yaw -= mouseMotion.Relative.X * _mouseSensitivityYaw;
+        _pitch -= mouseMotion.Relative.Y * _mouseSensitivityPitch;
         _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
         
-        RotationDegrees = new Vector3(_pitch, _yaw, 0f);
+        //RotationDegrees = new Vector3(_pitch, _yaw, 0f);
+    }
+
+    private void RotateCamera(float yaw, float pitch)
+    {
+        camera.RotationDegrees = new Vector3(pitch, yaw, 0f);
     }
 }
