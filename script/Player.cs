@@ -19,8 +19,12 @@ public partial class Player : CharacterBody3D
     [Export] 
     private int _speed { get; set; } = 7;
 
-    [Export] private float MaxZVel = 3;
-    [Export] private float MaxXVel = 0;
+    [Export] private float _MAX_SPEED = 10;
+
+    [Export] private float _MAX_ACCEL;
+
+    [Export] private float _MAX_Z_VEL = 10;
+    [Export] private float _MAX_X_VEL = 10;
     
     [Export]
     private float ACCELERATION = 1.99f;
@@ -46,6 +50,7 @@ public partial class Player : CharacterBody3D
         base._Ready();
         Input.MouseMode = Input.MouseModeEnum.Captured;
         camera = GetNode<Camera3D>("Camera3D");
+        _MAX_ACCEL = 10 * _speed;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -53,8 +58,9 @@ public partial class Player : CharacterBody3D
         var direction = Vector3.Zero;
         inputIsOppositeX = false;
         inputIsOppositeZ = false;
-        var cameraYRotation = camera.Rotation.Y;
+       // var cameraYRotation = camera.Rotation.Y;
         
+       // build direction vector
         if (Input.IsActionPressed("move_right"))
             direction.X += 1.0f;
         if (Input.IsActionPressed("move_left"))
@@ -64,8 +70,10 @@ public partial class Player : CharacterBody3D
         if (Input.IsActionPressed("move_forward"))
             direction.Z -= 1.0f;
 
+        //normalize direction vector
         if (direction != Vector3.Zero)
             direction = direction.Normalized();
+        else direction = Vector3.Zero;
         
         // did inputs flip
         if (direction.X != previousInputDirection.X)
@@ -93,7 +101,7 @@ public partial class Player : CharacterBody3D
         //Rotated(Vector3.Up, _cameraRotationY);
        // _rotatedDirection = direction.X.Rotated(Vector3.Up, _cameraRotationY);
        
-       
+       // apply velocity from direction and speed var
        _targetVelocity = AccelOrDecelerate(Velocity, direction, delta, inputIsOppositeX, inputIsOppositeZ); 
        
        // this works
@@ -105,7 +113,8 @@ public partial class Player : CharacterBody3D
             _targetVelocity.Y -= _fallAcceleration * (float)delta;
         else
             _targetVelocity.Y = 0;
-
+    
+        //velocity including gravity
         Velocity = _targetVelocity;
         
         MoveAndSlide();
@@ -135,62 +144,14 @@ public partial class Player : CharacterBody3D
     private Vector3 AccelOrDecelerate(Vector3 vel, Vector3 dir, double deltaTime, bool inputOppositeXdir, bool inputOppositeZdir)
     {
         float singleDelta = (float)deltaTime;
-        /*if (dir != Vector3.Zero)
-        {
-            var target_velocity = new Vector3();
-            target_velocity.X = dir.X * _speed;
-            target_velocity.Z = dir.Z * _speed;
-           // vel.X = Single.Lerp(vel.X, target_velocity.X, ACCELERATION * singleDelta);
-           // vel.Z = Single.Lerp(vel.Z, target_velocity.Z, ACCELERATION * singleDelta);
-            vel.X = Mathf.MoveToward(vel.X, target_velocity.X, ACCELERATION * singleDelta);
-            vel.Z = Mathf.MoveToward(vel.Z, target_velocity.Z, ACCELERATION * singleDelta);
-        }
-        else
-        {
-            vel.X = Mathf.MoveToward(vel.X, 0f, DECELERATION * singleDelta);
-            vel.Z = Mathf.MoveToward(vel.Z, 0f, DECELERATION * singleDelta);
-           // GD.Print(vel.Z);
-            
-        }*/
         
-        if (dir.X != 0f)
-        {
-            var target_velocity = new Vector3();
-            target_velocity.X = dir.X * _speed;
-            
-            // vel.X = Single.Lerp(vel.X, target_velocity.X, ACCELERATION * singleDelta);
-            // vel.Z = Single.Lerp(vel.Z, target_velocity.Z, ACCELERATION * singleDelta);
-            vel.X = Mathf.MoveToward(vel.X, target_velocity.X, ACCELERATION * singleDelta);
-           
-        }
-        else
-        {
-            vel.X = Mathf.MoveToward(vel.X, 0f, DECELERATION * singleDelta);
-           // GD.Print(vel.Z);
-        }
-        
-        if (dir.Z != 0f)
-        {
-            var target_velocity = new Vector3();
-            target_velocity.Z = dir.Z * _speed;
-            // vel.Z = Single.Lerp(vel.Z, target_velocity.Z, ACCELERATION * singleDelta);
-            vel.Z = Mathf.MoveToward(vel.Z, target_velocity.Z, ACCELERATION * singleDelta);
-           
-        }
-        else
-        {
-            vel.Z = Mathf.MoveToward(vel.Z, 0f, DECELERATION * singleDelta);
-            // GD.Print(vel.Z);
-            
-        }
-        // Vector2 absVel = new Vector2(vel.X, vel.Z);
-        // absVel.X = Mathf.Abs(absVel.X);
-        // absVel.Y = Mathf.Abs(absVel.Y);
-        // //CAREFUL absVel.Y is going to standin for Z
-        // vel.Z = (absVel.Y > MaxZVel) ? MaxZVel : vel.Z;
-        // vel.X = (absVel.X > MaxXVel) ? MaxXVel : vel.X;
+        vel = vel * DECELERATION * singleDelta;
+        float currentSpeed = vel.Dot(dir);
 
-        GD.Print(vel.X);
-        return vel;
+        float add_speed = float.Clamp(_MAX_SPEED - currentSpeed, 0, _MAX_ACCEL * singleDelta); 
+        GD.Print("current speed" + " " + currentSpeed);
+
+        return vel + add_speed * dir;
+
     }
 }

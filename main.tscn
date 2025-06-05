@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://d1oxhuvewcjhh"]
+[gd_scene load_steps=7 format=3 uid="uid://d1oxhuvewcjhh"]
 
 [ext_resource type="Script" uid="uid://cfy1nrw7n8c88" path="res://script/Player.cs" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://bm8t6i0c0p41v" path="res://script/debugTEst.cs" id="2_0xm2m"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7dm0k"]
 size = Vector2(10, 10)
@@ -57,3 +58,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+
+[node name="Node3D" type="Node3D" parent="."]
+script = ExtResource("2_0xm2m")
