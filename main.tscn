@@ -1,10 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://d1oxhuvewcjhh"]
+[gd_scene load_steps=9 format=3 uid="uid://d1oxhuvewcjhh"]
 
 [ext_resource type="Script" uid="uid://cfy1nrw7n8c88" path="res://script/Player.cs" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bm8t6i0c0p41v" path="res://script/debugTEst.cs" id="2_0xm2m"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_7dm0k"]
-size = Vector2(10, 10)
+[ext_resource type="Script" uid="uid://dnskna5xr86ck" path="res://script/GroundRay.cs" id="2_h2yge"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
 
@@ -14,17 +12,20 @@ radius = 0.4
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_7dm0k"]
 radius = 0.4
 
-[node name="Main" type="Node3D"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_7dm0k"]
+size = Vector2(10, 10)
 
-[node name="Ground" type="MeshInstance3D" parent="."]
-mesh = SubResource("PlaneMesh_7dm0k")
+[sub_resource type="BoxShape3D" id="BoxShape3D_h2yge"]
+size = Vector3(11, 1, 12)
+
+[node name="Main" type="Node3D"]
 
 [node name="ComparisonCube" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 mesh = SubResource("BoxMesh_ig7tw")
 
 [node name="Player" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.24461, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.24461, 0.9849, 0)
 script = ExtResource("1_ig7tw")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
@@ -36,6 +37,13 @@ mesh = SubResource("CapsuleMesh_7dm0k")
 [node name="Camera3D" type="Camera3D" parent="Player"]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.447513, 0)
 current = true
+
+[node name="GroundRay" type="RayCast3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.485184, 0)
+collide_with_areas = true
+debug_shape_custom_color = Color(0.729834, 0.670101, 1, 1)
+debug_shape_thickness = 5
+script = ExtResource("2_h2yge")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.652412, -0.242458, 0.718034, -0.129887, 0.897654, 0.421126, -0.746651, -0.368011, 0.554148, 0, 0, 0)
@@ -61,3 +69,13 @@ size_flags_vertical = 4
 
 [node name="Node3D" type="Node3D" parent="."]
 script = ExtResource("2_0xm2m")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="Ground" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("PlaneMesh_7dm0k")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.499007, -0.5)
+shape = SubResource("BoxShape3D_h2yge")
