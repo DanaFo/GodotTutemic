@@ -55,7 +55,7 @@ public partial class Player : CharacterBody3D
     public override void _PhysicsProcess(double delta)
     {
         spaceState = GetWorld3D().DirectSpaceState;
-        Vector3 endCast = new Vector3( GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z - 1.5f);
+        Vector3 endCast = new Vector3( GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z - 10.5f);
         PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(GlobalPosition, endCast);
         query.Exclude = [GetRid()];
         var raycastResults = spaceState.IntersectRay(query);
