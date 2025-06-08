@@ -1,4 +1,4 @@
-/// 1.5.0
+/// 1.5.1
 /// ////////////////////////////////////////////////
 /// THIS FILE HAS BEEN GENERATED.
 /// THE CHANGES IN THIS FILE WILL BE OVERWRITTEN
@@ -1040,6 +1040,8 @@ internal class DebugDraw3DScopeConfig : _DebugDrawInstanceWrapper_, IDisposable
     private static readonly StringName __is_hd_sphere = "is_hd_sphere";
     private static readonly StringName __set_plane_size = "set_plane_size";
     private static readonly StringName __get_plane_size = "get_plane_size";
+    private static readonly StringName __set_transform = "set_transform";
+    private static readonly StringName __get_transform = "get_transform";
     private static readonly StringName __set_viewport = "set_viewport";
     private static readonly StringName __get_viewport = "get_viewport";
     private static readonly StringName __set_no_depth_test = "set_no_depth_test";
@@ -1207,6 +1209,46 @@ internal class DebugDraw3DScopeConfig : _DebugDrawInstanceWrapper_, IDisposable
         {
 #if (!DEBUG || FORCED_DD3D) || (DEBUG && !FORCED_DD3D)
             return (float)(Instance?.Call(__get_plane_size));
+#endif
+        }
+#if !DEBUG && !FORCED_DD3D
+        else
+#endif
+        {
+#if !DEBUG && !FORCED_DD3D
+            return default;
+#endif
+        }
+    }
+    
+    public DebugDraw3DScopeConfig SetTransform(Transform3D value)
+    {
+#if !DEBUG && !FORCED_DD3D
+        if (_DebugDrawUtils_.IsCallEnabled)
+#endif
+        {
+#if (!DEBUG || FORCED_DD3D) || (DEBUG && !FORCED_DD3D)
+            return (DebugDraw3DScopeConfig)_DebugDrawUtils_.CreateWrapperFromObject((GodotObject)Instance?.Call(__set_transform, value));
+#endif
+        }
+#if !DEBUG && !FORCED_DD3D
+        else
+#endif
+        {
+#if !DEBUG && !FORCED_DD3D
+            return default;
+#endif
+        }
+    }
+    
+    public Transform3D GetTransform()
+    {
+#if !DEBUG && !FORCED_DD3D
+        if (_DebugDrawUtils_.IsCallEnabled)
+#endif
+        {
+#if (!DEBUG || FORCED_DD3D) || (DEBUG && !FORCED_DD3D)
+            return (Transform3D)(Instance?.Call(__get_transform));
 #endif
         }
 #if !DEBUG && !FORCED_DD3D

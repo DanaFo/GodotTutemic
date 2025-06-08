@@ -6,17 +6,19 @@ public partial class Player : CharacterBody3D
     private Camera3D camera;
     private PhysicsDirectSpaceState3D spaceState;
     private RayCast3D groundRay;
-    
+    [Export] private Curve angleVsAccelCurve;
     [Export] private float _mouseSensitivityYaw = 0.6f;
     [Export] private float _mouseSensitivityPitch = 0.5f;
     [Export] private float _minPitch = -90f;
     [Export] private float _maxPitch = 90f;
     
-    [Export] private int _fallAcceleration { get; set; } = 0;
-    [Export] private int _jumpForce { get; set; } = 10;
+    [Export] private int _fallAcceleration { get; set; } = 20500;
+    [Export] private float _jumpForce { get; set; } = 23f;
     [Export] private int _speed { get; set; } = 7;
+    [Export] private float _airControl { get; set; } = 0.2f;
 
     [Export] private float _MAX_SPEED = 7;
+    [Export] private float _MAX_AIR_SPEED = 2;
 
     [Export] private float _MAX_ACCEL;
 
@@ -26,8 +28,8 @@ public partial class Player : CharacterBody3D
     [Export]
     private float ACCELERATION = 1.99f;
     [Export]
-    // FAIRLY SURE THIS IS A PERCENT OF 60FPS - lower more DECELERATION applied
-    private float DECELERATION = 54f;
+    // FAIRLY SURE THIS IS A PERCENT OF 60FPS - lower more GROUND_DECEL applied
+    private float GROUND_DECEL = 54f;
     
     private Vector3 _targetVelocity = Vector3.Zero;
 
@@ -42,7 +44,8 @@ public partial class Player : CharacterBody3D
 
     private float _yaw = 0f;
     private float _pitch = 0f;
-    
+    private bool wishJump = false;
+
     public override void _Ready()
     {
         base._Ready();
@@ -84,14 +87,14 @@ public partial class Player : CharacterBody3D
        // GD.Print(direction);
      
        // calc velocity from direction and speed var
-       _targetVelocity = CalcVelocity(Velocity, direction, delta, inputIsOppositeX, inputIsOppositeZ); 
-    
+        _targetVelocity = CalcVelocity(Velocity, direction, delta, inputIsOppositeX, inputIsOppositeZ); 
+     
         //velocity including gravity
         Velocity = _targetVelocity;
         
         MoveAndSlide();
     }
-
+    
     public Vector3 CalcDirection()
     {
         Vector3 direction = Vector3.Zero;
@@ -131,7 +134,10 @@ public partial class Player : CharacterBody3D
         if (mouseMotion == null) return;
       
        // GD.Print(mouseMotion.Relative);
-            
+       if (Input.IsActionPressed("input_jump"))
+       {
+           wishJump = true;
+       }
         _yaw -= mouseMotion.Relative.X * _mouseSensitivityYaw;
         _pitch -= mouseMotion.Relative.Y * _mouseSensitivityPitch;
         _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
@@ -143,29 +149,54 @@ public partial class Player : CharacterBody3D
     {
         camera.RotationDegrees = new Vector3(pitch, yaw, 0f);
     }
+
+    private Vector3 UpdateGroundVel(Vector3 dir, Vector3 vel, float delta)
+    {
+        vel = vel * GROUND_DECEL * delta;
+        float currentSpeed = vel.Dot(dir);
+                
+        float addSpeed = float.Clamp(_MAX_SPEED - currentSpeed, 0, _MAX_ACCEL * delta);
+
+        return vel + (addSpeed * dir);
+
+    }
+    
+    private Vector3 UpdateAirVel(Vector3 dir, Vector3 vel, float delta)
+    {
+        float currentSpeed = vel.Dot(dir);
+                
+        float addSpeed = float.Clamp(_MAX_AIR_SPEED - currentSpeed, 0, _MAX_ACCEL * delta);
+
+        return vel + (addSpeed * dir);
+
+    }
+
+
+
     private Vector3 CalcVelocity(Vector3 vel, Vector3 dir, double deltaTime, bool inputOppositeXdir, bool inputOppositeZdir)
     {
         float singleDelta = (float)deltaTime;
 
-        if (DECELERATION > 0)
+        if (GROUND_DECEL > 0)
         {
             if (IsOnFloor())
             {
-                vel.Y = 0f;
-                vel = vel * DECELERATION * singleDelta;
+                return UpdateGroundVel(dir, vel, singleDelta);
+                
             }
             else
             {
-                vel.Y -= _fallAcceleration * singleDelta;
-                vel = vel * singleDelta;
+                return UpdateAirVel(dir, vel, singleDelta);
+
             }
         }
 
-        float currentSpeed = vel.Dot(dir);
-        float addSpeed = float.Clamp(_MAX_SPEED - currentSpeed, 0, _MAX_ACCEL * singleDelta);
-        GD.Print("current speed" + " " + currentSpeed);
+        return Vector3.Zero;
 
-        return vel + addSpeed * dir;
+
+
+
+
 
     }
 }
