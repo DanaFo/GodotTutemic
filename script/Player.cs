@@ -12,8 +12,12 @@ public partial class Player : CharacterBody3D
     [Export] private float _minPitch = -90f;
     [Export] private float _maxPitch = 90f;
     
-    [Export] private int _fallAcceleration { get; set; } = 20500;
-    [Export] private float _jumpForce { get; set; } = 23f;
+    [Export] private float _fallAcceleration { get; set; } = 20500f;
+    [Export] private float _jumpingFallAcceleration { get; set; } = 20500f;
+    [Export] private float _maxJumpHeight { get; set; } = 8;
+    [Export] private float _timeToJumpApex { get; set; } = 1f;
+    [Export] private float _fallVelocity { get; set; } = -1.2f;
+    [Export] private float _jumpVelocity { get; set; } = 3f;
     [Export] private int _speed { get; set; } = 7;
     [Export] private float _airControl { get; set; } = 0.2f;
 
@@ -35,6 +39,7 @@ public partial class Player : CharacterBody3D
 
     private float _cameraRotationY = 0f;
     private float _cameraRotationX = 0f;
+    private float _verticalVelocity = 0f;
     private Vector3 _rotatedDirection = Vector3.Zero;
 
     private Vector3 previousInputDirection = Vector3.Zero;
@@ -62,15 +67,34 @@ public partial class Player : CharacterBody3D
         PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(GlobalPosition, endCast);
         query.Exclude = [GetRid()];
         var raycastResults = spaceState.IntersectRay(query);
+
+        _jumpVelocity = CalcJumpVelocity(_maxJumpHeight, _timeToJumpApex);
+        _jumpingFallAcceleration = CalcJumpGravity(_maxJumpHeight, _timeToJumpApex);
+        
         if (raycastResults.Count > 0)
         {
             GD.Print("Hit at:" + raycastResults["position"]);
         }
 
-        if (groundRay.IsColliding())
+        if (!groundRay.IsColliding())
         {
-            GD.Print("Colliding!");
+            wishJump = false;
+            
+            // coyote time check
         }
+        
+        if (Input.IsActionJustPressed("input_jump") && groundRay.IsColliding())
+
+        {
+            wishJump = true;
+            GD.Print("Jump");
+            
+        }
+        
+        // if (groundRay.IsColliding())
+        // {
+        //     GD.Print("Colliding!");
+        // }
         Vector3 direction = Vector3.Zero;
         direction = CalcDirection();
         previousInputDirection = direction;
@@ -129,15 +153,18 @@ public partial class Player : CharacterBody3D
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
-
+        
+        // DEBUG close window input
+        if (Input.IsActionJustPressed("CloseDebugWindow") && OS.IsDebugBuild() )
+        {
+            GetTree().Quit();
+        }
        var mouseMotion = @event as InputEventMouseMotion;
         if (mouseMotion == null) return;
       
        // GD.Print(mouseMotion.Relative);
-       if (Input.IsActionPressed("input_jump"))
-       {
-           wishJump = true;
-       }
+//       if (Input.IsActionJustPressed("input_jump") && groundRay.IsColliding())
+     
         _yaw -= mouseMotion.Relative.X * _mouseSensitivityYaw;
         _pitch -= mouseMotion.Relative.Y * _mouseSensitivityPitch;
         _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
@@ -156,6 +183,15 @@ public partial class Player : CharacterBody3D
         float currentSpeed = vel.Dot(dir);
                 
         float addSpeed = float.Clamp(_MAX_SPEED - currentSpeed, 0, _MAX_ACCEL * delta);
+        if (addSpeed <= 0)
+        {
+            addSpeed = 0;
+        }
+
+        if (wishJump == true)
+        {
+            vel += new Vector3(0f, _jumpVelocity, 0f );
+        }
 
         return vel + (addSpeed * dir);
 
@@ -171,8 +207,15 @@ public partial class Player : CharacterBody3D
 
     }
 
+    private float CalcJumpVelocity(float maxJumpHeight, float timeToJumpApex)
+    {
+        return (2f * maxJumpHeight) / timeToJumpApex;
+    }
 
-
+    private float CalcJumpGravity(float jumpMaxHeight, float timeToJumpApex)
+    {
+        return (-2f * jumpMaxHeight) / timeToJumpApex;
+    }
     private Vector3 CalcVelocity(Vector3 vel, Vector3 dir, double deltaTime, bool inputOppositeXdir, bool inputOppositeZdir)
     {
         float singleDelta = (float)deltaTime;
@@ -186,6 +229,8 @@ public partial class Player : CharacterBody3D
             }
             else
             {
+                vel += new Vector3(0f, _fallVelocity, 0f );
+                GD.Print("Not on floor" + " fall vel" + _fallVelocity);
                 return UpdateAirVel(dir, vel, singleDelta);
 
             }
