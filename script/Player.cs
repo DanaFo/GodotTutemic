@@ -6,6 +6,7 @@ public partial class Player : CharacterBody3D
     private Camera3D camera;
     private PhysicsDirectSpaceState3D spaceState;
     private RayCast3D groundRay;
+    private Timer _coyoteTimer;
     [Export] private Curve angleVsAccelCurve;
     [Export] private float _mouseSensitivityYaw = 0.6f;
     [Export] private float _mouseSensitivityPitch = 0.5f;
@@ -50,6 +51,7 @@ public partial class Player : CharacterBody3D
     private float _yaw = 0f;
     private float _pitch = 0f;
     private bool wishJump = false;
+    private bool _coyoteTimerStarted = false;
 
     public override void _Ready()
     {
@@ -57,7 +59,11 @@ public partial class Player : CharacterBody3D
         Input.MouseMode = Input.MouseModeEnum.Captured;
         camera = GetNode<Camera3D>("Camera3D");
         groundRay = GetNode<RayCast3D>("GroundRay");
+        _coyoteTimer = GetNode<Timer>("CoyoteTimer");
+        _coyoteTimer.Timeout += () => CoyoteTimerEnd();
         _MAX_ACCEL = 10 * _speed;
+        _fallVelocity = CalcJumpGravity(_maxJumpHeight, _timeToJumpApex);
+        _jumpVelocity = CalcJumpVelocity(_maxJumpHeight, _timeToJumpApex);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -67,18 +73,21 @@ public partial class Player : CharacterBody3D
         PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(GlobalPosition, endCast);
         query.Exclude = [GetRid()];
         var raycastResults = spaceState.IntersectRay(query);
-
-        _jumpVelocity = CalcJumpVelocity(_maxJumpHeight, _timeToJumpApex);
-        _jumpingFallAcceleration = CalcJumpGravity(_maxJumpHeight, _timeToJumpApex);
         
         if (raycastResults.Count > 0)
         {
             GD.Print("Hit at:" + raycastResults["position"]);
         }
 
-        if (!groundRay.IsColliding())
+        if (!groundRay.IsColliding() && wishJump == false)
         {
-            wishJump = false;
+            
+            if (_coyoteTimerStarted == false)
+            {
+                _coyoteTimer.Start();
+                _coyoteTimerStarted = true;
+                _fallVelocity /= 5;
+            }
             
             // coyote time check
         }
@@ -159,7 +168,7 @@ public partial class Player : CharacterBody3D
         {
             GetTree().Quit();
         }
-       var mouseMotion = @event as InputEventMouseMotion;
+        var mouseMotion = @event as InputEventMouseMotion;
         if (mouseMotion == null) return;
       
        // GD.Print(mouseMotion.Relative);
@@ -237,11 +246,11 @@ public partial class Player : CharacterBody3D
         }
 
         return Vector3.Zero;
-
-
-
-
-
-
+    }
+    private void CoyoteTimerEnd()
+    {
+        CalcJumpGravity(_maxJumpHeight, _timeToJumpApex);
+        _coyoteTimerStarted = false;
+        GD.Print("coyote timer ended");
     }
 }

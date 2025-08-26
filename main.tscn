@@ -48,6 +48,9 @@ debug_shape_custom_color = Color(0.729834, 0.670101, 1, 1)
 debug_shape_thickness = 5
 script = ExtResource("2_h2yge")
 
+[node name="CoyoteTimer" type="Timer" parent="Player"]
+wait_time = 0.7
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.652412, -0.242458, 0.718034, -0.129887, 0.897654, 0.421126, -0.746651, -0.368011, 0.554148, -0.000960827, 0.00585485, 0.0049448)
 shadow_enabled = true
@@ -103,3 +106,5 @@ skeleton = NodePath("../..")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeterCubeSB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_7mycd")
+
+[connection signal="timeout" from="Player/CoyoteTimer" to="Player" method="_on_coyote_timer_timeout"]
