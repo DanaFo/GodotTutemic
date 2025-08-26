@@ -7,6 +7,7 @@ public partial class Player : CharacterBody3D
     private PhysicsDirectSpaceState3D spaceState;
     private RayCast3D groundRay;
     private Timer _coyoteTimer;
+    private Timer _jumpBufferTimer;
     [Export] private Curve angleVsAccelCurve;
     [Export] private float _mouseSensitivityYaw = 0.6f;
     [Export] private float _mouseSensitivityPitch = 0.5f;
@@ -52,6 +53,9 @@ public partial class Player : CharacterBody3D
     private float _pitch = 0f;
     private bool wishJump = false;
     private bool _coyoteTimerStarted = false;
+    private float fromJumpStartMaxHeight = 0f;
+
+    private float _currentGroundVelocity = 0f;
 
     public override void _Ready()
     {
@@ -61,8 +65,10 @@ public partial class Player : CharacterBody3D
         groundRay = GetNode<RayCast3D>("GroundRay");
         _coyoteTimer = GetNode<Timer>("CoyoteTimer");
         _coyoteTimer.Timeout += () => CoyoteTimerEnd();
+        _jumpBufferTimer = GetNode<Timer>("JumpBufferTimer");
+        _jumpBufferTimer.Timeout += () => wishJump = false;
         _MAX_ACCEL = 10 * _speed;
-        _fallVelocity = CalcJumpGravity(_maxJumpHeight, _timeToJumpApex);
+        _fallVelocity = CalcFallVelocity(_maxJumpHeight, _timeToJumpApex);
         _jumpVelocity = CalcJumpVelocity(_maxJumpHeight, _timeToJumpApex);
     }
 
@@ -73,18 +79,42 @@ public partial class Player : CharacterBody3D
         PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(GlobalPosition, endCast);
         query.Exclude = [GetRid()];
         var raycastResults = spaceState.IntersectRay(query);
+        if (wishJump == false)
+        {
+            fromJumpStartMaxHeight = GetGlobalPosition().Y + _maxJumpHeight;    
+        }
+        
+        GD.Print("jump max height global pos: " + fromJumpStartMaxHeight);
+        //GD.Print(_currentGroundVelocity + " : current ground velocity");
         
         if (raycastResults.Count > 0)
         {
             GD.Print("Hit at:" + raycastResults["position"]);
         }
-
-        if (!groundRay.IsColliding() && wishJump == false)
+        _fallVelocity = -1.2f;
+        GD.Print("time left " + _coyoteTimer.GetTimeLeft());
+        // GRAVITY (IS THIS NEEDED)
+        if (IsOnFloor())
         {
+            GD.Print("Colliding!");
+            CoyoteTimerEnd();
+            _currentGroundVelocity = GetVelocity().Length();
+        }
+        // Maintain 0 _fallVelocity while CoyoteTimer is ticking down
+        if (!IsOnFloor() && _coyoteTimerStarted == true && _coyoteTimer.GetTimeLeft() >= 0)
+        {
+            _fallVelocity = 0;
             
+        }
+        // START COYOTE TIME IF RUNNING OFF EDGE
+        if (!IsOnFloor() && wishJump == false && _currentGroundVelocity > 4.5f) 
+        {
+            GD.Print("not colliding");
             if (_coyoteTimerStarted == false)
             {
                 _coyoteTimer.Start();
+                GD.Print("coyote timer started");
+                GD.Print(wishJump + " wish jump value");
                 _coyoteTimerStarted = true;
                 _fallVelocity = 0;
             }
@@ -92,19 +122,14 @@ public partial class Player : CharacterBody3D
             // coyote time check
         }
         
-        if (Input.IsActionJustPressed("input_jump") && groundRay.IsColliding())
-
+        // JUMPING ON GROUND, wishJump is true
+        if (Input.IsActionPressed("input_jump") && IsOnFloor())
         {
             wishJump = true;
+            _jumpBufferTimer.Start();
             GD.Print("Jump");
-            
         }
         
-        if (groundRay.IsColliding() && wishJump == false)
-        {
-             GD.Print("Colliding!");
-             _fallVelocity = -1.2f;
-        }
         Vector3 direction = Vector3.Zero;
         direction = CalcDirection();
         previousInputDirection = direction;
@@ -127,6 +152,115 @@ public partial class Player : CharacterBody3D
         Velocity = _targetVelocity;
         
         MoveAndSlide();
+    }
+    
+    
+    public override void _Input(InputEvent @event)
+    {
+        base._Input(@event);
+        
+        // DEBUG close window input
+        if (Input.IsActionJustPressed("CloseDebugWindow") && OS.IsDebugBuild() )
+        {
+            GetTree().Quit();
+        }
+        var mouseMotion = @event as InputEventMouseMotion;
+        if (mouseMotion == null) return;
+      
+       // GD.Print(mouseMotion.Relative);
+//       if (Input.IsActionJustPressed("input_jump") && groundRay.IsColliding())
+     
+        _yaw -= mouseMotion.Relative.X * _mouseSensitivityYaw;
+        _pitch -= mouseMotion.Relative.Y * _mouseSensitivityPitch;
+        _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
+        
+        //RotationDegrees = new Vector3(_pitch, _yaw, 0f);
+    }
+    private Vector3 UpdateGroundVel(Vector3 dir, Vector3 vel, float delta)
+    {
+        vel = vel * GROUND_DECEL * delta;
+        float currentSpeed = vel.Dot(dir);
+                
+        float addSpeed = float.Clamp(_MAX_SPEED - currentSpeed, 0, _MAX_ACCEL * delta);
+        if ( addSpeed <= 0 )
+        {
+            addSpeed = 0;
+        }
+
+        if ( wishJump == true && ( GetGlobalPosition().Y < (fromJumpStartMaxHeight - 1f) ) )
+        {
+            vel += new Vector3(0f, _jumpVelocity, 0f );
+        }
+        else if ( wishJump == true && ( GetGlobalPosition().Y >= (fromJumpStartMaxHeight -1f) ) ) 
+        {
+            wishJump = false;
+        }
+        
+        _currentGroundVelocity = GetVelocity().Length();
+        
+        return vel + ( addSpeed * dir );
+
+    }
+    
+
+
+   
+    private Vector3 CalcVelocity(Vector3 vel, Vector3 dir, double deltaTime, bool inputOppositeXdir, bool inputOppositeZdir)
+    {
+        float singleDelta = (float)deltaTime;
+
+        if (GROUND_DECEL > 0)
+        {
+            // note IsOnFloor() uses move and slide
+            if (IsOnFloor())
+            {
+                GD.Print("Colliding!");
+                CoyoteTimerEnd();
+                _currentGroundVelocity = GetVelocity().Length();
+                return UpdateGroundVel(dir, vel, singleDelta);
+                
+            }
+            else
+            {
+                vel += new Vector3(0f, _fallVelocity, 0f );
+                GD.Print("update air velocity " + "fall vel : " + _fallVelocity);
+                return UpdateAirVel(dir, vel, singleDelta);
+
+            }
+        }
+
+        return Vector3.Zero;
+    }
+    private void CoyoteTimerEnd()
+    {
+      
+            _fallVelocity = -1.2f;
+     
+        _coyoteTimerStarted = false;
+        GD.Print("coyote timer ended");
+    }
+    private Vector3 UpdateAirVel(Vector3 dir, Vector3 vel, float delta)
+    {
+        float currentSpeed = vel.Dot(dir);
+                
+        float addSpeed = float.Clamp(_MAX_AIR_SPEED - currentSpeed, 0, _MAX_ACCEL * delta);
+        _currentGroundVelocity = 0f;
+        return vel + (addSpeed * dir);
+
+    }
+    private void RotateCamera(float yaw, float pitch)
+    {
+        camera.RotationDegrees = new Vector3(pitch, yaw, 0f);
+    }
+    
+    private float CalcJumpVelocity(float maxJumpHeight, float timeToJumpApex)
+    {
+        return (2f * maxJumpHeight) / timeToJumpApex;
+    }
+
+    private float CalcFallVelocity(float jumpMaxHeight, float timeToJumpApex)
+    {
+        return (-2f * jumpMaxHeight) / timeToJumpApex;
     }
     
     public Vector3 CalcDirection()
@@ -159,99 +293,5 @@ public partial class Player : CharacterBody3D
         }
         return direction;
 
-    }
-    public override void _Input(InputEvent @event)
-    {
-        base._Input(@event);
-        
-        // DEBUG close window input
-        if (Input.IsActionJustPressed("CloseDebugWindow") && OS.IsDebugBuild() )
-        {
-            GetTree().Quit();
-        }
-        var mouseMotion = @event as InputEventMouseMotion;
-        if (mouseMotion == null) return;
-      
-       // GD.Print(mouseMotion.Relative);
-//       if (Input.IsActionJustPressed("input_jump") && groundRay.IsColliding())
-     
-        _yaw -= mouseMotion.Relative.X * _mouseSensitivityYaw;
-        _pitch -= mouseMotion.Relative.Y * _mouseSensitivityPitch;
-        _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
-        
-        //RotationDegrees = new Vector3(_pitch, _yaw, 0f);
-    }
-
-    private void RotateCamera(float yaw, float pitch)
-    {
-        camera.RotationDegrees = new Vector3(pitch, yaw, 0f);
-    }
-
-    private Vector3 UpdateGroundVel(Vector3 dir, Vector3 vel, float delta)
-    {
-        vel = vel * GROUND_DECEL * delta;
-        float currentSpeed = vel.Dot(dir);
-                
-        float addSpeed = float.Clamp(_MAX_SPEED - currentSpeed, 0, _MAX_ACCEL * delta);
-        if (addSpeed <= 0)
-        {
-            addSpeed = 0;
-        }
-
-        if (wishJump == true)
-        {
-            vel += new Vector3(0f, _jumpVelocity, 0f );
-        }
-
-        return vel + (addSpeed * dir);
-
-    }
-    
-    private Vector3 UpdateAirVel(Vector3 dir, Vector3 vel, float delta)
-    {
-        float currentSpeed = vel.Dot(dir);
-                
-        float addSpeed = float.Clamp(_MAX_AIR_SPEED - currentSpeed, 0, _MAX_ACCEL * delta);
-
-        return vel + (addSpeed * dir);
-
-    }
-
-    private float CalcJumpVelocity(float maxJumpHeight, float timeToJumpApex)
-    {
-        return (2f * maxJumpHeight) / timeToJumpApex;
-    }
-
-    private float CalcJumpGravity(float jumpMaxHeight, float timeToJumpApex)
-    {
-        return (-2f * jumpMaxHeight) / timeToJumpApex;
-    }
-    private Vector3 CalcVelocity(Vector3 vel, Vector3 dir, double deltaTime, bool inputOppositeXdir, bool inputOppositeZdir)
-    {
-        float singleDelta = (float)deltaTime;
-
-        if (GROUND_DECEL > 0)
-        {
-            if (IsOnFloor())
-            {
-                return UpdateGroundVel(dir, vel, singleDelta);
-                
-            }
-            else
-            {
-                vel += new Vector3(0f, _fallVelocity, 0f );
-                GD.Print("b nvr" + " fall vel" + _fallVelocity);
-                return UpdateAirVel(dir, vel, singleDelta);
-
-            }
-        }
-
-        return Vector3.Zero;
-    }
-    private void CoyoteTimerEnd()
-    {
-        _fallVelocity = -1.2f;
-        _coyoteTimerStarted = false;
-        GD.Print("coyote timer ended");
     }
 }
