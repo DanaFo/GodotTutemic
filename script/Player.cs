@@ -86,7 +86,7 @@ public partial class Player : CharacterBody3D
             {
                 _coyoteTimer.Start();
                 _coyoteTimerStarted = true;
-                _fallVelocity /= 5;
+                _fallVelocity = 0;
             }
             
             // coyote time check
@@ -100,10 +100,11 @@ public partial class Player : CharacterBody3D
             
         }
         
-        // if (groundRay.IsColliding())
-        // {
-        //     GD.Print("Colliding!");
-        // }
+        if (groundRay.IsColliding() && wishJump == false)
+        {
+             GD.Print("Colliding!");
+             _fallVelocity = -1.2f;
+        }
         Vector3 direction = Vector3.Zero;
         direction = CalcDirection();
         previousInputDirection = direction;
@@ -239,7 +240,7 @@ public partial class Player : CharacterBody3D
             else
             {
                 vel += new Vector3(0f, _fallVelocity, 0f );
-                GD.Print("Not on floor" + " fall vel" + _fallVelocity);
+                GD.Print("b nvr" + " fall vel" + _fallVelocity);
                 return UpdateAirVel(dir, vel, singleDelta);
 
             }
@@ -249,7 +250,7 @@ public partial class Player : CharacterBody3D
     }
     private void CoyoteTimerEnd()
     {
-        CalcJumpGravity(_maxJumpHeight, _timeToJumpApex);
+        _fallVelocity = -1.2f;
         _coyoteTimerStarted = false;
         GD.Print("coyote timer ended");
     }
