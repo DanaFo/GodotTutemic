@@ -56,6 +56,9 @@ public partial class Player : CharacterBody3D
     private float fromJumpStartMaxHeight = 0f;
 
     private float _currentGroundVelocity = 0f;
+    private double jumpTimer = 0f;
+    private float _verticalDisplacementCounter = 0f;
+    private bool wasOnFloorLastFrame = false;
 
     public override void _Ready()
     {
@@ -66,7 +69,7 @@ public partial class Player : CharacterBody3D
         _coyoteTimer = GetNode<Timer>("CoyoteTimer");
         _coyoteTimer.Timeout += () => CoyoteTimerEnd();
         _jumpBufferTimer = GetNode<Timer>("JumpBufferTimer");
-        _jumpBufferTimer.Timeout += () => wishJump = false;
+       // _jumpBufferTimer.Timeout += () => wishJump = false;
         _MAX_ACCEL = 10 * _speed;
         _fallVelocity = CalcFallVelocity(_maxJumpHeight, _timeToJumpApex);
         _jumpVelocity = CalcJumpVelocity(_maxJumpHeight, _timeToJumpApex);
@@ -75,46 +78,63 @@ public partial class Player : CharacterBody3D
     public override void _PhysicsProcess(double delta)
     {
         spaceState = GetWorld3D().DirectSpaceState;
-        Vector3 endCast = new Vector3( GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z - 10.5f);
-        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(GlobalPosition, endCast);
+        Vector3 endCastPosition = new Vector3( GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z - 10.5f);
+        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(GlobalPosition, endCastPosition);
+        // filter self from query
         query.Exclude = [GetRid()];
         var raycastResults = spaceState.IntersectRay(query);
+        var verticalDisplacementThisFrame = 0f;
         if (wishJump == false)
         {
             fromJumpStartMaxHeight = GetGlobalPosition().Y + _maxJumpHeight;    
         }
         
-        GD.Print("jump max height global pos: " + fromJumpStartMaxHeight);
+        //GD.Print("jump max height global pos: " + fromJumpStartMaxHeight);
         //GD.Print(_currentGroundVelocity + " : current ground velocity");
         
         if (raycastResults.Count > 0)
         {
             GD.Print("Hit at:" + raycastResults["position"]);
         }
+        // Set default gravity
         _fallVelocity = -1.2f;
-        GD.Print("time left " + _coyoteTimer.GetTimeLeft());
-        // GRAVITY (IS THIS NEEDED)
-        if (IsOnFloor())
+        
+        if (_coyoteTimerStarted == true)
         {
-            GD.Print("Colliding!");
-            CoyoteTimerEnd();
-            _currentGroundVelocity = GetVelocity().Length();
+            GD.Print("time left " + _coyoteTimer.GetTimeLeft());
         }
+        
+        // Landing from not the ground
+        if (IsOnFloor() && wasOnFloorLastFrame == false)
+        {
+            GD.Print("Landing!");
+            wasOnFloorLastFrame = true;   // so we don't retrigger 
+            CoyoteTimerEnd(); // don't need this anymore go back to regular gravity
+            _currentGroundVelocity = GetVelocity().Length();
+            if (wishJump == true)
+            {
+                wishJump = false;
+            }
+        }
+
         // Maintain 0 _fallVelocity while CoyoteTimer is ticking down
         if (!IsOnFloor() && _coyoteTimerStarted == true && _coyoteTimer.GetTimeLeft() >= 0)
         {
             _fallVelocity = 0;
-            
+            wasOnFloorLastFrame = false;
+
         }
-        // START COYOTE TIME IF RUNNING OFF EDGE
-        if (!IsOnFloor() && wishJump == false && _currentGroundVelocity > 4.5f) 
+        // START COYOTE TIME IF RUNNING OFF EDGE, optional use _currentGroundVelocity to make it more selective
+        if (!IsOnFloor() && wishJump == false) 
         {
             GD.Print("not colliding");
-            if (_coyoteTimerStarted == false)
+           // if (_coyoteTimerStarted == false && GetGlobalPosition().Y < (GetGlobalPosition().Y + (_maxJumpHeight - 0.5)))
+            if (_coyoteTimerStarted == false && wasOnFloorLastFrame == true)
+                
             {
                 _coyoteTimer.Start();
                 GD.Print("coyote timer started");
-                GD.Print(wishJump + " wish jump value");
+                //GD.Print(wishJump + " wish jump value");
                 _coyoteTimerStarted = true;
                 _fallVelocity = 0;
             }
@@ -123,13 +143,15 @@ public partial class Player : CharacterBody3D
         }
         
         // JUMPING ON GROUND, wishJump is true
+        UpdateJumpTimer(delta);
+        
         if (Input.IsActionPressed("input_jump") && IsOnFloor())
         {
             wishJump = true;
             _jumpBufferTimer.Start();
             GD.Print("Jump");
         }
-        
+     
         Vector3 direction = Vector3.Zero;
         direction = CalcDirection();
         previousInputDirection = direction;
@@ -152,9 +174,11 @@ public partial class Player : CharacterBody3D
         Velocity = _targetVelocity;
         
         MoveAndSlide();
+        _verticalDisplacementCounter += verticalDisplacementThisFrame;
     }
-    
-    
+
+
+
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
@@ -187,24 +211,18 @@ public partial class Player : CharacterBody3D
             addSpeed = 0;
         }
 
-        if ( wishJump == true && ( GetGlobalPosition().Y < (fromJumpStartMaxHeight - 1f) ) )
+        if ( wishJump == true )
         {
+            GD.Print("global pos y :" + GetGlobalPosition().Y);
             vel += new Vector3(0f, _jumpVelocity, 0f );
         }
-        else if ( wishJump == true && ( GetGlobalPosition().Y >= (fromJumpStartMaxHeight -1f) ) ) 
-        {
-            wishJump = false;
-        }
+       
         
         _currentGroundVelocity = GetVelocity().Length();
         
         return vel + ( addSpeed * dir );
 
     }
-    
-
-
-   
     private Vector3 CalcVelocity(Vector3 vel, Vector3 dir, double deltaTime, bool inputOppositeXdir, bool inputOppositeZdir)
     {
         float singleDelta = (float)deltaTime;
@@ -212,10 +230,10 @@ public partial class Player : CharacterBody3D
         if (GROUND_DECEL > 0)
         {
             // note IsOnFloor() uses move and slide
-            if (IsOnFloor())
+            if ( IsOnFloor() || _fallVelocity == 0)
             {
-                GD.Print("Colliding!");
-                CoyoteTimerEnd();
+            //    GD.Print("Colliding!");
+               
                 _currentGroundVelocity = GetVelocity().Length();
                 return UpdateGroundVel(dir, vel, singleDelta);
                 
@@ -233,18 +251,30 @@ public partial class Player : CharacterBody3D
     }
     private void CoyoteTimerEnd()
     {
-      
-            _fallVelocity = -1.2f;
-     
+        _fallVelocity = -1.2f;
         _coyoteTimerStarted = false;
-        GD.Print("coyote timer ended");
+    //    GD.Print("coyote timer ended");
     }
     private Vector3 UpdateAirVel(Vector3 dir, Vector3 vel, float delta)
     {
+        wasOnFloorLastFrame = false;
         float currentSpeed = vel.Dot(dir);
                 
         float addSpeed = float.Clamp(_MAX_AIR_SPEED - currentSpeed, 0, _MAX_ACCEL * delta);
         _currentGroundVelocity = 0f;
+        
+        // if ( wishJump == true && ( GetGlobalPosition().Y < (fromJumpStartMaxHeight - 1f) ) )
+        // {
+        //
+        //     GD.Print("global pos y :" + GetGlobalPosition().Y);
+        //     vel += new Vector3(0f, _jumpVelocity/delta, 0f );
+        // }
+        // else if ( wishJump == true && ( GetGlobalPosition().Y >= (fromJumpStartMaxHeight -1f) ) ) 
+        // {
+        //     wishJump = false;
+        //     vel += new Vector3(0f, 0f, 0f );
+        // }
+        
         return vel + (addSpeed * dir);
 
     }
@@ -255,7 +285,7 @@ public partial class Player : CharacterBody3D
     
     private float CalcJumpVelocity(float maxJumpHeight, float timeToJumpApex)
     {
-        return (2f * maxJumpHeight) / timeToJumpApex;
+        return 2f * maxJumpHeight / timeToJumpApex;
     }
 
     private float CalcFallVelocity(float jumpMaxHeight, float timeToJumpApex)
@@ -293,5 +323,17 @@ public partial class Player : CharacterBody3D
         }
         return direction;
 
+    }
+    private void UpdateJumpTimer(double delta)
+    {
+        if (Input.IsActionPressed("input_jump"))
+        {
+            jumpTimer += delta;
+        }
+        else
+        {
+            // GD.Print("jump timer: "+ jumpTimer);
+            jumpTimer = 0f;
+        }
     }
 }
