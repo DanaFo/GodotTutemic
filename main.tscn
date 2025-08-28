@@ -1,9 +1,10 @@
-[gd_scene load_steps=23 format=3 uid="uid://d1oxhuvewcjhh"]
+[gd_scene load_steps=24 format=3 uid="uid://d1oxhuvewcjhh"]
 
 [ext_resource type="Script" uid="uid://cfy1nrw7n8c88" path="res://script/Player.cs" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bm8t6i0c0p41v" path="res://script/debugTEst.cs" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://dnskna5xr86ck" path="res://script/GroundRay.cs" id="2_h2yge"]
 [ext_resource type="Texture2D" uid="uid://bkqfjkarq7271" path="res://Blocky Characters/GLB format/Textures/texture-b.png" id="3_efxa6"]
+[ext_resource type="FontFile" uid="uid://dojkjxs4oii8g" path="res://PoetsenOne-Regular.ttf" id="4_dg77c"]
 [ext_resource type="PackedScene" uid="uid://c8dnasocadl11" path="res://Fantasy Town Kit/Models/GLB format/tree.glb" id="4_kek77"]
 [ext_resource type="PackedScene" uid="uid://b6vma3kn8u6vr" path="res://Blocky Characters/GLB format/character-b.glb" id="5_4c57u"]
 [ext_resource type="PackedScene" uid="uid://bw47jrl7btrfx" path="res://Fantasy Town Kit/Models/GLB format/stall-red.glb" id="6_efxa6"]
@@ -117,7 +118,7 @@ grow_vertical = 0
 size_flags_horizontal = 0
 size_flags_vertical = 8
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/DialogueUI"]
+[node name="AvatarPortrait" type="TextureRect" parent="CanvasLayer/DialogueUI"]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 2
@@ -130,6 +131,49 @@ offset_bottom = -18.0
 grow_vertical = 0
 texture = SubResource("AtlasTexture_dg77c")
 stretch_mode = 4
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/DialogueUI"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 13.0
+offset_top = -156.0
+offset_right = 161.0
+offset_bottom = -14.0
+grow_vertical = 0
+color = Color(0.169245, 0.169245, 0.169245, 1)
+
+[node name="TextBG" type="ColorRect" parent="CanvasLayer/DialogueUI"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 170.0
+offset_top = -110.0
+offset_right = 865.0
+offset_bottom = -25.0
+grow_vertical = 0
+color = Color(0.219501, 0.219501, 0.219501, 0.917647)
+
+[node name="DialogueText" type="Label" parent="CanvasLayer/DialogueUI/TextBG"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.015
+anchor_top = 0.02
+anchor_right = 0.995
+anchor_bottom = 0.99
+theme_override_colors/font_color = Color(0.830335, 0.830335, 0.830335, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_dg77c")
+theme_override_font_sizes/font_size = 17
+text = "testing out some dialogue asdf adsf asdf asdf ;lkasjdf;laksdj sdlfkjsad;lkfj asl;dkfjasd;lkfj sadlfkjas;dlkfjasasl"
+horizontal_alignment = 3
+autowrap_mode = 3
+justification_flags = 169
+text_overrun_behavior = 3
 
 [node name="Node3D" type="Node3D" parent="."]
 script = ExtResource("2_0xm2m")
