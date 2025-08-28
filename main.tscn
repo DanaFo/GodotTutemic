@@ -1,9 +1,16 @@
-[gd_scene load_steps=12 format=3 uid="uid://d1oxhuvewcjhh"]
+[gd_scene load_steps=17 format=3 uid="uid://d1oxhuvewcjhh"]
 
 [ext_resource type="Script" uid="uid://cfy1nrw7n8c88" path="res://script/Player.cs" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bm8t6i0c0p41v" path="res://script/debugTEst.cs" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://dnskna5xr86ck" path="res://script/GroundRay.cs" id="2_h2yge"]
-[ext_resource type="PackedScene" uid="uid://bd8apectm4a1b" path="res://Fantasy Town Kit/Models/GLTF format/tree.glb" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://c8dnasocadl11" path="res://Fantasy Town Kit/Models/GLB format/tree.glb" id="4_kek77"]
+[ext_resource type="PackedScene" uid="uid://b6vma3kn8u6vr" path="res://Blocky Characters/GLB format/character-b.glb" id="5_4c57u"]
+[ext_resource type="PackedScene" uid="uid://bw47jrl7btrfx" path="res://Fantasy Town Kit/Models/GLB format/stall-red.glb" id="6_efxa6"]
+[ext_resource type="PackedScene" uid="uid://nelhk1qk3f0k" path="res://Food Kit/Models/GLB format/apple.glb" id="7_dg77c"]
+[ext_resource type="PackedScene" uid="uid://ty8ie5cdjlup" path="res://Food Kit/Models/GLB format/banana.glb" id="8_ycdy4"]
+[ext_resource type="PackedScene" uid="uid://ca6133qx6vysd" path="res://Food Kit/Models/GLB format/bottle-ketchup.glb" id="9_w48qg"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7dm0k"]
 radius = 0.4
@@ -21,11 +28,15 @@ size = Vector3(51.7467, 1, 105.75)
 height = 2.34985
 radius = 0.536621
 
-[sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_7mycd"]
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_lquwl"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
 [node name="Main" type="Node3D"]
+
+[node name="EdgeWarningCube" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.608804, 0, 0, 0, 0.608804, 0, 0, 0, 0.608804, 4.74507, 2.38987, 0)
+mesh = SubResource("BoxMesh_ig7tw")
+skeleton = NodePath("../MeterCubeSB")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08594, 0.9849, -0.96853)
@@ -82,8 +93,10 @@ size_flags_vertical = 4
 script = ExtResource("2_0xm2m")
 
 [node name="GroundSB" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0966, 0, 0)
 
 [node name="Ground" type="MeshInstance3D" parent="GroundSB"]
+transform = Transform3D(4.58367, 0, 0, 0, 2.21131, 0, 0, 0, 3.18826, -18.4584, 0, 0)
 mesh = SubResource("PlaneMesh_7dm0k")
 skeleton = NodePath("../..")
 
@@ -94,12 +107,12 @@ shape = SubResource("BoxShape3D_h2yge")
 [node name="TreeStaticBody" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.754497, 0, 1.1977)
 
-[node name="tree2" parent="TreeStaticBody" instance=ExtResource("4_1bvp3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.000993013, 0)
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TreeStaticBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15859, 0)
 shape = SubResource("CylinderShape3D_lquwl")
+
+[node name="tree3" parent="TreeStaticBody" instance=ExtResource("4_kek77")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0522565, 0.000993013, -0.104191)
 
 [node name="MeterCubeSB" type="StaticBody3D" parent="."]
 
@@ -108,13 +121,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0763342, 0.5, 0)
 mesh = SubResource("BoxMesh_ig7tw")
 skeleton = NodePath("../..")
 
-[node name="ComparisonCube" type="MeshInstance3D" parent="MeterCubeSB/ComparisonCube"]
-transform = Transform3D(0.608804, 0, 0, 0, 0.608804, 0, 0, 0, 0.608804, 4.66874, 1.88987, 0)
-mesh = SubResource("BoxMesh_ig7tw")
-skeleton = NodePath("../..")
+[node name="StaticBody3D" type="StaticBody3D" parent="MeterCubeSB/ComparisonCube"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeterCubeSB"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-shape = SubResource("BoxShape3D_7mycd")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeterCubeSB/ComparisonCube/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_lquwl")
+
+[node name="character-b2" parent="." instance=ExtResource("5_4c57u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.13434, 0.0371799, 2.31419)
+
+[node name="apple2" parent="." instance=ExtResource("7_dg77c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.78537, 0.805628, 2.49819)
+
+[node name="banana2" parent="." instance=ExtResource("8_ycdy4")]
+transform = Transform3D(0.0334162, 0.680895, -0.694928, -0.963749, 0.118333, 0.0696012, 0.133156, 0.685594, 0.678152, 6.74129, 0.869344, 2.91099)
+
+[node name="bottle-ketchup2" parent="." instance=ExtResource("9_w48qg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.00008, 0.818384, 3.35814)
+
+[node name="stall-red2" parent="." instance=ExtResource("6_efxa6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.78912, 0.000993013, 5.92703)
 
 [connection signal="timeout" from="Player/CoyoteTimer" to="Player" method="_on_coyote_timer_timeout"]
