@@ -1,14 +1,16 @@
-[gd_scene load_steps=17 format=3 uid="uid://d1oxhuvewcjhh"]
+[gd_scene load_steps=23 format=3 uid="uid://d1oxhuvewcjhh"]
 
 [ext_resource type="Script" uid="uid://cfy1nrw7n8c88" path="res://script/Player.cs" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bm8t6i0c0p41v" path="res://script/debugTEst.cs" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://dnskna5xr86ck" path="res://script/GroundRay.cs" id="2_h2yge"]
+[ext_resource type="Texture2D" uid="uid://bkqfjkarq7271" path="res://Blocky Characters/GLB format/Textures/texture-b.png" id="3_efxa6"]
 [ext_resource type="PackedScene" uid="uid://c8dnasocadl11" path="res://Fantasy Town Kit/Models/GLB format/tree.glb" id="4_kek77"]
 [ext_resource type="PackedScene" uid="uid://b6vma3kn8u6vr" path="res://Blocky Characters/GLB format/character-b.glb" id="5_4c57u"]
 [ext_resource type="PackedScene" uid="uid://bw47jrl7btrfx" path="res://Fantasy Town Kit/Models/GLB format/stall-red.glb" id="6_efxa6"]
 [ext_resource type="PackedScene" uid="uid://nelhk1qk3f0k" path="res://Food Kit/Models/GLB format/apple.glb" id="7_dg77c"]
 [ext_resource type="PackedScene" uid="uid://ty8ie5cdjlup" path="res://Food Kit/Models/GLB format/banana.glb" id="8_ycdy4"]
 [ext_resource type="PackedScene" uid="uid://ca6133qx6vysd" path="res://Food Kit/Models/GLB format/bottle-ketchup.glb" id="9_w48qg"]
+[ext_resource type="Texture2D" uid="uid://dcxy8sr36fejl" path="res://Textures/rural_asphalt_road_2k.exr" id="10_4c57u"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
 
@@ -17,6 +19,10 @@ radius = 0.4
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_7dm0k"]
 radius = 0.4
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dg77c"]
+atlas = ExtResource("3_efxa6")
+region = Rect2(128, 128, 133.058, 132.146)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7dm0k"]
 size = Vector2(10, 10)
@@ -30,6 +36,19 @@ radius = 0.536621
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_lquwl"]
 data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_efxa6"]
+panorama = ExtResource("10_4c57u")
+
+[sub_resource type="Sky" id="Sky_dg77c"]
+sky_material = SubResource("PanoramaSkyMaterial_efxa6")
+
+[sub_resource type="Environment" id="Environment_kek77"]
+background_mode = 2
+background_energy_multiplier = 0.8
+sky = SubResource("Sky_dg77c")
+ambient_light_source = 3
+ssr_enabled = true
 
 [node name="Main" type="Node3D"]
 
@@ -89,6 +108,29 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
+[node name="DialogueUI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/DialogueUI"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -150.0
+offset_right = 153.0
+offset_bottom = -18.0
+grow_vertical = 0
+texture = SubResource("AtlasTexture_dg77c")
+stretch_mode = 4
+
 [node name="Node3D" type="Node3D" parent="."]
 script = ExtResource("2_0xm2m")
 
@@ -127,18 +169,28 @@ skeleton = NodePath("../..")
 shape = SubResource("ConcavePolygonShape3D_lquwl")
 
 [node name="character-b2" parent="." instance=ExtResource("5_4c57u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.13434, 0.0371799, 2.31419)
+transform = Transform3D(0.298291, 0, -0.954475, 0, 1, 0, 0.954475, 0, 0.298291, 7.69323, -0.0054438, 4.25745)
 
 [node name="apple2" parent="." instance=ExtResource("7_dg77c")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.78537, 0.805628, 2.49819)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.47661, 0.805628, 5.378)
 
 [node name="banana2" parent="." instance=ExtResource("8_ycdy4")]
-transform = Transform3D(0.0334162, 0.680895, -0.694928, -0.963749, 0.118333, 0.0696012, 0.133156, 0.685594, 0.678152, 6.74129, 0.869344, 2.91099)
+transform = Transform3D(0.0334162, 0.680895, -0.694928, -0.963749, 0.118333, 0.0696012, 0.133156, 0.685594, 0.678152, 6.43253, 0.869344, 5.7908)
 
 [node name="bottle-ketchup2" parent="." instance=ExtResource("9_w48qg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.00008, 0.818384, 3.35814)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.69132, 0.818384, 6.23795)
 
 [node name="stall-red2" parent="." instance=ExtResource("6_efxa6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.78912, 0.000993013, 5.92703)
 
+[node name="stall-red" parent="stall-red2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00455064, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_kek77")
+
 [connection signal="timeout" from="Player/CoyoteTimer" to="Player" method="_on_coyote_timer_timeout"]
+
+[editable path="character-b2"]
+[editable path="bottle-ketchup2"]
+[editable path="stall-red2"]
