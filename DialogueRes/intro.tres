@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Dialogue" load_steps=3 format=3 uid="uid://05byxccluski"]
+
+[ext_resource type="Texture2D" uid="uid://bv2ivk7x47gtf" path="res://Textures/Faces/face_robot.png" id="1_8lx6x"]
+[ext_resource type="Script" uid="uid://c83kef8xarsll" path="res://script/dialogue.gd" id="1_nmqh8"]
+
+[resource]
+script = ExtResource("1_nmqh8")
+avatar_texture = ExtResource("1_8lx6x")
+dialogue_slides = Array[String](["Welcome to the bazaar!", "You hungry?", "I have all this food I was going to junk.", "But maybe that's what makes your tummy grumble?"])
+metadata/_custom_type_script = "uid://c83kef8xarsll"

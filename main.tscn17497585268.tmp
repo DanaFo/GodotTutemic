@@ -125,17 +125,17 @@ _avatarTexturePath = NodePath("AvatarPortrait")
 _currentDialogueTres = ExtResource("4_w48qg")
 
 [node name="AvatarPortrait" type="TextureRect" parent="CanvasLayer/DialogueUI"]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 23.0
+offset_left = 20.0
 offset_top = -150.0
-offset_right = 151.0
-offset_bottom = -22.0
+offset_right = 153.0
+offset_bottom = -18.0
 grow_vertical = 0
 texture = SubResource("AtlasTexture_dg77c")
-expand_mode = 1
 stretch_mode = 4
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer/DialogueUI"]
