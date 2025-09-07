@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3 uid="uid://c1p0xga255xp5"]
+
+[ext_resource type="Script" uid="uid://bvmbv3v2hbsh6" path="res://food_quiz.gd" id="1_8ef74"]
+[ext_resource type="PackedScene" uid="uid://bw47jrl7btrfx" path="res://Fantasy Town Kit/Models/GLB format/stall-red.glb" id="2_rj0w6"]
+[ext_resource type="PackedScene" uid="uid://nelhk1qk3f0k" path="res://Food Kit/Models/GLB format/apple.glb" id="3_ilrji"]
+[ext_resource type="PackedScene" uid="uid://ty8ie5cdjlup" path="res://Food Kit/Models/GLB format/banana.glb" id="4_s3pi2"]
+[ext_resource type="PackedScene" uid="uid://ca6133qx6vysd" path="res://Food Kit/Models/GLB format/bottle-ketchup.glb" id="5_8h2fd"]
+[ext_resource type="PackedScene" uid="uid://b6vma3kn8u6vr" path="res://Blocky Characters/GLB format/character-b.glb" id="6_rj0w6"]
+[ext_resource type="Material" uid="uid://bguc6ymmivpa4" path="res://Materials/character.tres" id="7_ilrji"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_w48qg"]
+
+[node name="FoodQuiz" type="Node3D"]
+script = ExtResource("1_8ef74")
+
+[node name="stall-red2" parent="." instance=ExtResource("2_rj0w6")]
+
+[node name="stall-red" parent="stall-red2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00455064, 0)
+
+[node name="apple2" parent="stall-red2" instance=ExtResource("3_ilrji")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.312507, 0.804635, -0.549034)
+
+[node name="banana2" parent="stall-red2" instance=ExtResource("4_s3pi2")]
+transform = Transform3D(0.0334162, 0.680895, -0.694928, -0.963749, 0.118333, 0.0696012, 0.133156, 0.685594, 0.678152, -0.356587, 0.868351, -0.136234)
+
+[node name="bottle-ketchup2" parent="stall-red2" instance=ExtResource("5_8h2fd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0977969, 0.817391, 0.310916)
+
+[node name="DialogTrigger" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DialogTrigger"]
+transform = Transform3D(3.015, 0, 0, 0, 3.015, 0, 0, 0, 3.015, -0.465124, 0.845, 0)
+shape = SubResource("SphereShape3D_w48qg")
+
+[node name="character-b2" parent="." instance=ExtResource("6_rj0w6")]
+transform = Transform3D(0.298291, 0, -0.954475, 0, 1, 0, 0.954475, 0, 0.298291, 0.904112, -0.00643681, -1.66958)
+
+[node name="leg-left" parent="character-b2/character-b/root" index="0"]
+surface_material_override/0 = ExtResource("7_ilrji")
+
+[node name="leg-right" parent="character-b2/character-b/root" index="1"]
+surface_material_override/0 = ExtResource("7_ilrji")
+
+[node name="torso" parent="character-b2/character-b/root" index="2"]
+surface_material_override/0 = ExtResource("7_ilrji")
+
+[node name="arm-left" parent="character-b2/character-b/root/torso" index="0"]
+surface_material_override/0 = ExtResource("7_ilrji")
+
+[node name="arm-right" parent="character-b2/character-b/root/torso" index="1"]
+surface_material_override/0 = ExtResource("7_ilrji")
+
+[node name="head" parent="character-b2/character-b/root/torso" index="2"]
+surface_material_override/0 = ExtResource("7_ilrji")
+
+[connection signal="body_entered" from="DialogTrigger" to="." method="_on_dialog_trigger_body_entered"]
+[connection signal="body_exited" from="DialogTrigger" to="." method="_on_dialog_trigger_body_exited"]
+
+[editable path="stall-red2"]
+[editable path="stall-red2/bottle-ketchup2"]
+[editable path="character-b2"]

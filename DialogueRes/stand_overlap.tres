@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Dialogue" load_steps=3 format=3 uid="uid://b1cc8qysmubkf"]
+
+[ext_resource type="Texture2D" uid="uid://cxppcuus4pc2s" path="res://Textures/Faces/face_adventurer.png" id="1_x72bu"]
+[ext_resource type="Script" uid="uid://c83kef8xarsll" path="res://script/dialogue.gd" id="2_6vb5n"]
+
+[resource]
+script = ExtResource("2_6vb5n")
+avatar_texture = ExtResource("1_x72bu")
+dialogue_slides = Array[String](["Wanna take a closer look?"])
+metadata/_custom_type_script = "uid://c83kef8xarsll"
